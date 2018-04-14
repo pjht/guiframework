@@ -19,10 +19,10 @@ class App
     @windows[wname].instance_eval(&block)
   end
   def run()
-    Thread.new do
+    servthread=Thread.new do
       server(self)
     end
-    if File.exists? "/Applications/Google\ Chrome.app"
+    if false#File.exists? "/Applications/Google\ Chrome.app"
       `"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome" --app="http://localhost:2000"`
     else
       puts "Chrome is not on your system."
@@ -31,6 +31,7 @@ class App
       puts "The app will open in your default browser as a regular webpage instead."
       sleep(5)
       `open http://localhost:2000`
+      servthread.join
     end
   end
 end
