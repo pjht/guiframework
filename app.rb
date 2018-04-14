@@ -1,6 +1,13 @@
+$forcenochrome=false
 class App
   attr_reader :windows
   def initialize(title,&block)
+    puts ARGV.inspect
+    if ARGV.length>0
+      if ARGV[0]=="--forcenochrome"
+        $forcenochrome=true
+      end
+    end
     @windows={}
     @windows[:main]=Window.new(:main,title)
     @windows[:main].instance_eval(&block)
@@ -22,7 +29,7 @@ class App
     servthread=Thread.new do
       server(self)
     end
-    if false#File.exists? "/Applications/Google\ Chrome.app"
+    if File.exists? "/Applications/Google\ Chrome.app" and !$forcenochrome
       `"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome" --app="http://localhost:2000"`
     else
       puts "Chrome is not on your system."
