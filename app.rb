@@ -2,7 +2,6 @@ $forcenochrome=false
 class App
   attr_reader :windows
   def initialize(title,&block)
-    puts ARGV.inspect
     if ARGV.length>0
       if ARGV[0]=="--forcenochrome"
         $forcenochrome=true
