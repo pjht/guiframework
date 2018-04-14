@@ -44,6 +44,12 @@ def server(app)
             client.puts "Content-Type:image/jpeg"
             client.puts
             client.print img
+          elsif wname.include? ".mp4"
+            vid=File.read(wname)
+            client.puts "HTTP/1.1 200 OK"
+            client.puts "Content-Type:video/mp4"
+            client.puts
+            client.print vid
           else
             wname="main" if wname==""
             wname=wname.to_sym

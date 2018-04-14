@@ -53,3 +53,13 @@ class Image < Element
     return "<img src=\"#{@name}\"></img>"
   end
 end
+
+class Video < Element
+  def initialize(name)
+    @name=name
+  end
+
+  def render()
+    return "<video width=320 height=200 controls><source src=\"#{@name}\" type=\"video/mp4\"></video>"
+  end
+end
