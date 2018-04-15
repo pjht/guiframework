@@ -1,4 +1,33 @@
 require "socket"
+
+def sfile(file,headers,type,client,url)
+  total=file.length
+  range=headers["Range"]
+  positions=range.split("=")[1].split("-")
+  start=positions[0].to_i(10)
+  m_end=positions[1] ? positions[1].to_i(10) : total - 1;
+  chunksize=(m_end-start)+1
+  chunk=file[start, m_end+1]
+  if type=="mp4"
+    r_headers={"Content-Range"=>"bytes #{start}-#{m_end}/#{total}","Accept-Ranges"=>"bytes","Content-Length"=>chunksize,"Content-Type"=>"video/mp4"}
+  elsif type=="webm"
+    r_headers={"Content-Range"=>"bytes #{start}-#{m_end}/#{total}","Accept-Ranges"=>"bytes","Content-Length"=>chunksize,"Content-Type"=>"video/webm"}
+  elsif type=="mpeg"
+    r_headers={"Content-Range"=>"bytes #{start}-#{m_end}/#{total}","Accept-Ranges"=>"bytes","Content-Length"=>chunksize,"Content-Type"=>"audio/mpeg"}
+  elsif type=="ogg"
+    r_headers={"Content-Range"=>"bytes #{start}-#{m_end}/#{total}","Accept-Ranges"=>"bytes","Content-Length"=>chunksize,"Content-Type"=>"audio/ogg"}
+  end
+  header=""
+  r_headers.each do |key,value|
+    header+="#{key}: #{value}"
+  end
+  client.puts "HTTP/1.1 206 Partial Content"
+  client.print "#{header}"
+  client.print "\n\n"
+  client.print "#{chunk}"
+  client.close
+end
+
 def server(app)
   Thread::abort_on_exception=true
   server = TCPServer.new 2000
@@ -45,11 +74,7 @@ def server(app)
             client.puts
             client.print img
           elsif wname.include? ".mp4"
-            vid=File.read(wname)
-            client.puts "HTTP/1.1 200 OK"
-            client.puts "Content-Type:video/mp4"
-            client.puts
-            client.print vid
+            sfile(File.open(wname, "rb") {|io| io.read},headers,"mp4",client,url)
           else
             wname="main" if wname==""
             wname=wname.to_sym
