@@ -10,13 +10,13 @@ app=App.new("My application") {
   add_element(Text.new("Calculator:"))
   opthash={:add=>"Add",:sub=>"Subtract",:mult=>"Multiply",:div=>"Divide"}
   add_element(TextField.new { |val|
-      $num1=val.to_i
+      $num1=val.to_f
     })
   add_element(Menu.new(opthash) { |val|
     $op=val
   })
   add_element(TextField.new { |val|
-      $num2=val.to_i
+      $num2=val.to_f
   })
   add_element(ActionButton.new("Calculate") {
     case $op
