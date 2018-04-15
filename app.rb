@@ -16,7 +16,7 @@ class App
     window=windows[wname]
     html=window.render
     css=window.render_css
-    doc="<!DOCTYPE html><html><head><style>#{css}</style><title>#{window.title}</title></head><body>#{html}</body</html>"
+    doc="<!DOCTYPE html><html><head><script src=\"main.js\"></script><style>#{css}</style><title>#{window.title}</title></head><body>#{html}</body</html>"
     return doc
   end
 
@@ -29,6 +29,7 @@ class App
       server(self)
     end
     if File.exists? "/Applications/Google\ Chrome.app" and !$forcenochrome
+      startwsserv()
       `"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome" --app="http://localhost:2000"`
     else
       puts "Chrome is not on your system."
@@ -37,7 +38,35 @@ class App
       puts "The app will open in your default browser as a regular webpage instead."
       sleep(5)
       `open http://localhost:2000`
+      startwsserv()
       servthread.join
+    end
+  end
+
+  def startwsserv()
+    serv=WebSocketServer.new
+    Thread.new(self,serv) do |parent,server|
+      server.accept
+      while true
+        message=server.recv
+        if message==false
+          server.accept
+          next
+        end
+        parent.handlemessage(message)
+      end
+    end
+  end
+
+  def handlemessage(message)
+    message=message.split("")
+    type=message.shift
+    id=message.join("").to_i
+    puts "Got action of type #{type} and id #{id}"
+    case type
+    when "b"
+      button=ActionButton.idbuttons[id]
+      button.block.call
     end
   end
 end

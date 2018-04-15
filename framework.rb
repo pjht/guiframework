@@ -2,6 +2,7 @@ require_relative "app"
 require_relative "window"
 require_relative "element"
 require_relative "serv"
+require_relative "wsserv"
 class Object
   def descendants
     ObjectSpace.each_object(::Class).select {|klass| klass < self }
@@ -50,7 +51,7 @@ class Image < Element
   end
 
   def render()
-    return "<img src=\"#{@name}\"></img>"
+    return "<img src=\"#{@name}.jpg\"></img>"
   end
 end
 
@@ -60,6 +61,28 @@ class Video < Element
   end
 
   def render()
-    return "<video width=320 height=200 controls><source src=\"#{@name}\" type=\"video/mp4\"></video>"
+    return "<video controls width=320 height=300><source src=\"#{@name}.webm\" type=\"video/webm\"><source src=\"#{@name}.mp4\" type=\"video/mp4\"></video>"
+  end
+end
+
+class ActionButton < Element
+  @@buttonids={}
+  @@idbuttons={}
+  @@nextid=0
+  attr_reader :block
+  def initialize(name,&block)
+    @name=name
+    @@buttonids[self]=@@nextid
+    @@idbuttons[@@nextid]=self
+    @@nextid+=1
+    @block=block
+  end
+
+  def render()
+    return "<button onclick=\"sendMessage('b#{@@buttonids[self]}')\">#{@name}</button>"
+  end
+
+  def self.idbuttons()
+    return @@idbuttons
   end
 end

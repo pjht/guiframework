@@ -3,28 +3,48 @@ require "socket"
 def sfile(file,headers,type,client,url)
   total=file.length
   range=headers["Range"]
-  positions=range.split("=")[1].split("-")
-  start=positions[0].to_i(10)
-  m_end=positions[1] ? positions[1].to_i(10) : total - 1;
-  chunksize=(m_end-start)+1
-  chunk=file[start, m_end+1]
-  if type=="mp4"
-    r_headers={"Content-Range"=>"bytes #{start}-#{m_end}/#{total}","Accept-Ranges"=>"bytes","Content-Length"=>chunksize,"Content-Type"=>"video/mp4"}
-  elsif type=="webm"
-    r_headers={"Content-Range"=>"bytes #{start}-#{m_end}/#{total}","Accept-Ranges"=>"bytes","Content-Length"=>chunksize,"Content-Type"=>"video/webm"}
-  elsif type=="mpeg"
-    r_headers={"Content-Range"=>"bytes #{start}-#{m_end}/#{total}","Accept-Ranges"=>"bytes","Content-Length"=>chunksize,"Content-Type"=>"audio/mpeg"}
-  elsif type=="ogg"
-    r_headers={"Content-Range"=>"bytes #{start}-#{m_end}/#{total}","Accept-Ranges"=>"bytes","Content-Length"=>chunksize,"Content-Type"=>"audio/ogg"}
+  if range!=nil
+    positions=range.split("=")[1].split("-")
+    start=positions[0].to_i(10)
+    m_end=positions[1] ? positions[1].to_i(10) : total - 1;
+    chunksize=(m_end-start)+1
+    chunk=file[start, m_end+1]
+    if type=="mp4"
+      r_headers={"Content-Range"=>"bytes #{start}-#{m_end}/#{total}","Accept-Ranges"=>"bytes","Content-Length"=>chunksize,"Content-Type"=>"video/mp4"}
+    elsif type=="webm"
+      r_headers={"Content-Range"=>"bytes #{start}-#{m_end}/#{total}","Accept-Ranges"=>"bytes","Content-Length"=>chunksize,"Content-Type"=>"video/webm"}
+    elsif type=="mpeg"
+      r_headers={"Content-Range"=>"bytes #{start}-#{m_end}/#{total}","Accept-Ranges"=>"bytes","Content-Length"=>chunksize,"Content-Type"=>"audio/mpeg"}
+    elsif type=="ogg"
+      r_headers={"Content-Range"=>"bytes #{start}-#{m_end}/#{total}","Accept-Ranges"=>"bytes","Content-Length"=>chunksize,"Content-Type"=>"audio/ogg"}
+    end
+    header=""
+    r_headers.each do |key,value|
+      header+="#{key}: #{value}\n"
+    end
+    client.puts "HTTP/1.1 206 Partial Content"
+    client.print "#{header}"
+    client.print "\n"
+    client.print "#{chunk}"
+  else
+    if type=="mp4"
+      r_headers={"Content-Type"=>"video/mp4"}
+    elsif type=="webm"
+      r_headers={"Content-Type"=>"video/webm"}
+    elsif type=="mpeg"
+      r_headers={"Content-Type"=>"audio/mpeg"}
+    elsif type=="ogg"
+      r_headers={"Content-Type"=>"audio/ogg"}
+    end
+    header=""
+    r_headers.each do |key,value|
+      header+="#{key}: #{value}\n"
+    end
+    client.puts "HTTP/1.1 200 OK"
+    client.print "#{header}"
+    client.print "\n"
+    client.print "#{file}"
   end
-  header=""
-  r_headers.each do |key,value|
-    header+="#{key}: #{value}"
-  end
-  client.puts "HTTP/1.1 206 Partial Content"
-  client.print "#{header}"
-  client.print "\n\n"
-  client.print "#{chunk}"
   client.close
 end
 
@@ -75,6 +95,14 @@ def server(app)
             client.print img
           elsif wname.include? ".mp4"
             sfile(File.open(wname, "rb") {|io| io.read},headers,"mp4",client,url)
+          elsif wname.include? ".webm"
+            sfile(File.open(wname, "rb") {|io| io.read},headers,"webm",client,url)
+          elsif wname.include? ".js"
+            script=File.read(wname)
+            client.puts "HTTP/1.1 200 OK"
+            client.puts "Content-Type:application/javascript"
+            client.puts
+            client.print script
           else
             wname="main" if wname==""
             wname=wname.to_sym
@@ -86,7 +114,9 @@ def server(app)
           end
         end
         client.close
-      rescue Exception=>e
+      rescue StandardError=>e
+        puts e
+        puts e.backtrace
         client.puts "HTTP/1.1 500 Internal Server Error"
         client.puts "Content-Type:text/plain"
         client.puts
