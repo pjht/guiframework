@@ -1,6 +1,4 @@
 class Element
-  def initialize()
-  end
   def render()
     return ""
   end
