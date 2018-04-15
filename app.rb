@@ -16,7 +16,22 @@ class App
     window=windows[wname]
     html=window.render
     css=window.render_css
-    doc="<!DOCTYPE html><html><head><script src=\"main.js\"></script><style>#{css}</style><title>#{window.title}</title></head><body>#{html}</body</html>"
+    doc=<<-ENDDOC
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src=\"main.js\"></script>
+    <style>
+      #{css}
+    </style>
+    <title>#{window.title}</title>
+  </head>
+  <body>
+    #{html}
+  </body>
+</html>
+    ENDDOC
     return doc
   end
 
@@ -59,14 +74,27 @@ class App
   end
 
   def handlemessage(message)
-    message=message.split("")
-    type=message.shift
-    id=message.join("").to_i
-    puts "Got action of type #{type} and id #{id}"
+    puts "Got message #{message}"
+    part1,val=message.split("=")
+    part1=part1.split("")
+    type=part1.shift
+    part1=part1.join("")
+    id=part1.to_i
+    if val
+      puts "Got message of type #{type} and id #{id} with value #{val}"
+    else
+      puts "Got message of type #{type} and id #{id}"
+    end
     case type
     when "b"
-      button=ActionButton.idbuttons[id]
+      button=ActionButton.idtobutton[id]
       button.block.call
+    when "m"
+      menu=Menu.idtomenu[id]
+      menu.block.call(val.to_sym)
+    when "t"
+      tf=TextField.idtotf[id]
+      tf.block.call(val)
     end
   end
 end

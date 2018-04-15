@@ -66,23 +66,73 @@ class Video < Element
 end
 
 class ActionButton < Element
-  @@buttonids={}
-  @@idbuttons={}
+  @@buttontoid={}
+  @@idtobutton={}
   @@nextid=0
   attr_reader :block
   def initialize(name,&block)
     @name=name
-    @@buttonids[self]=@@nextid
-    @@idbuttons[@@nextid]=self
+    @@buttontoid[self]=@@nextid
+    @@idtobutton[@@nextid]=self
     @@nextid+=1
     @block=block
   end
 
   def render()
-    return "<button onclick=\"sendMessage('b#{@@buttonids[self]}')\">#{@name}</button>"
+    return "<button id=#{@@buttontoid[self]}>#{@name}</button>"
   end
 
-  def self.idbuttons()
-    return @@idbuttons
+  def self.idtobutton()
+    return @@idtobutton
+  end
+end
+
+
+class Menu < Element
+  @@menutoid={}
+  @@idtomenu={}
+  @@nextid=0
+  attr_reader :block
+  def initialize(opts,&block)
+    @opts=opts
+    @@menutoid[self]=@@nextid
+    @@idtomenu[@@nextid]=self
+    @@nextid+=1
+    @block=block
+  end
+
+  def render()
+    html="<select id=#{@@menutoid[self]}>"
+    @opts.each do |val,text|
+      html+="<option value=\"#{val.to_s}\">#{text}</option>"
+    end
+    html+="</select>"
+    return html
+  end
+
+  def self.idtomenu()
+    return @@idtomenu
+  end
+end
+
+
+class TextField < Element
+  @@tftoid={}
+  @@idtotf={}
+  @@nextid=0
+  attr_reader :block
+  def initialize(&block)
+    @@tftoid[self]=@@nextid
+    @@idtotf[@@nextid]=self
+    @@nextid+=1
+    @block=block
+  end
+
+  def render()
+    html="<input id=#{@@tftoid[self]}>"
+  end
+
+  def self.idtotf()
+    return @@idtotf
   end
 end
