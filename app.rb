@@ -76,23 +76,23 @@ class App
   def handlemessage(message)
     puts "Got message #{message}"
     part1,val=message.split("=")
-    part1=part1.split("")
-    type=part1.shift
-    part1=part1.join("")
-    id=part1.to_i
+    type=part1.match /[a-zA-Z]+/.to_s
+    type=type[0]
+    id=part1.match /\d+/
+    id=id[0].to_i
     if val
       puts "Got message of type #{type} and id #{id} with value #{val}"
     else
       puts "Got message of type #{type} and id #{id}"
     end
     case type
-    when "b"
+    when "button"
       button=ActionButton.idtobutton[id]
       button.block.call
-    when "m"
+    when "menu"
       menu=Menu.idtomenu[id]
       menu.block.call(val.to_sym)
-    when "t"
+    when "textfield"
       tf=TextField.idtotf[id]
       tf.block.call(val)
     end

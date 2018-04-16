@@ -9,24 +9,24 @@ function sendMessage(message) {
 $(document).ready(function(){
   $("button").click(function(){
       var id=$(this).attr("id");
-      sendMessage("b"+id);
+      sendMessage("button"+id);
   });
 
   $("select").change(function(){
       var id=$(this).attr("id");
       var val=$(this).val();
-      sendMessage("m"+id+"="+val);
+      sendMessage("menu"+id+"="+val);
   });
 
   $("select").each(function(){
       var id=$(this).attr("id");
       var val=$(this).val();
-      sendMessage("m"+id+"="+val);
+      sendMessage("menu"+id+"="+val);
   });
 
   $("input").change(function(){
       var id=$(this).attr("id");
       var val=$(this).val();
-      sendMessage("t"+id+"="+val);
+      sendMessage("textfield"+id+"="+val);
   });
 });
