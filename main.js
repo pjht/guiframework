@@ -6,6 +6,23 @@ window.onbeforeunload = function(){
 function sendMessage(message) {
   socket.send(message);
 }
+
+socket.onmessage = function (event) {
+  message=event.data;
+  var temp=message.split("=");
+  var part1=temp[0];
+  var val=temp[1];
+  var type=part1.match(/[a-zA-Z]+/);
+  type=type[0];
+  var id=part1.match(/\d+/);
+  id=id[0];
+  switch(type) {
+    case "paragraph":
+        $("p[id="+id+"]").text(val);
+        break;
+  }
+}
+
 $(document).ready(function(){
   $("button").click(function(){
       var id=$(this).attr("id");

@@ -18,18 +18,21 @@ app=App.new("My application") {
   add_element(TextField.new { |val|
       $num2=val.to_f
   })
+  res=nil
   add_element(ActionButton.new("Calculate") {
     case $op
     when :add
-      puts $num1+$num2
+      result=$num1+$num2
     when :sub
-      puts $num1-$num2
+      result=$num1-$num2
     when :mult
-      puts $num1*$num2
+      result=$num1*$num2
     when :div
-      puts $num1.to_f/$num2
+      result=$num1.to_f/$num2
     end
+    res.settext("Result:#{result}")
   })
+  res=add_element(Text.new("Result:"))
 }
 app.add_window(:wind,"A window") {
   add_element(Text.new("hello"))

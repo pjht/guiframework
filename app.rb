@@ -2,6 +2,7 @@ $forcenochrome=false
 class App
   attr_reader :windows
   def initialize(title,&block)
+    $app=self
     if ARGV.length>0
       if ARGV[0]=="--forcenochrome"
         $forcenochrome=true
@@ -59,8 +60,8 @@ class App
   end
 
   def startwsserv()
-    serv=WebSocketServer.new
-    Thread.new(self,serv) do |parent,server|
+    @serv=WebSocketServer.new
+    Thread.new(self,@serv) do |parent,server|
       server.accept
       while true
         message=server.recv
@@ -96,5 +97,10 @@ class App
       tf=TextField.idtotf[id]
       tf.block.call(val)
     end
+  end
+
+  def update(type,id,val)
+    puts "Sent message #{type}#{id}=#{val}"
+    @serv.send("#{type}#{id}=#{val}")
   end
 end

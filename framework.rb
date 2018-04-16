@@ -11,12 +11,22 @@ end
 
 class Text < Element
   attr_reader :text
+  @@ttoid={}
+  @@idtot={}
+  @@nextid=1
   def initialize(text)
     @text=text
+    @@ttoid[self]=@@nextid
+    @@idtot[@nextid]=self
+    @@nextid+=1
   end
 
   def render()
-    return @text
+    return "<p id=#{@@ttoid[self]}>#{@text}</p>"
+  end
+
+  def settext(text)
+    $app.update("paragraph",@@ttoid[self],text)
   end
 end
 
