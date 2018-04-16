@@ -81,11 +81,6 @@ class App
     type=type[0]
     id=part1.match /\d+/
     id=id[0].to_i
-    if val
-      puts "Got message of type #{type} and id #{id} with value #{val}"
-    else
-      puts "Got message of type #{type} and id #{id}"
-    end
     case type
     when "button"
       button=ActionButton.idtobutton[id]
@@ -96,6 +91,9 @@ class App
     when "textfield"
       tf=TextField.idtotf[id]
       tf.block.call(val)
+    when "radiobutton"
+      rb=RadioButton.idtorb[id]
+      rb.block.call(val)
     end
   end
 

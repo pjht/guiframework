@@ -146,3 +146,29 @@ class TextField < Element
     return @@idtotf
   end
 end
+
+class RadioButton < Element
+  @@idtorb={}
+  @@rbtoid={}
+  @@nextid=0
+  attr_reader :block
+  def initialize(buttons,&block)
+    @@rbtoid[self]=@@nextid
+    @@idtorb[@@nextid]=self
+    @@nextid+=1
+    @block=block
+    @buttons=buttons
+  end
+
+  def render()
+    html=""
+    @buttons.each do |value,text|
+      html+="<input type=\"radio\" id=#{@@rbtoid[self]} name=\"#{@@rbtoid[self]}\" value=\"#{value.to_s}\">#{text}<br>"
+    end
+    return html
+  end
+
+  def self.idtorb()
+    return @@idtorb
+  end
+end

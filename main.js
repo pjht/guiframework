@@ -4,6 +4,7 @@ window.onbeforeunload = function(){
 }
 
 function sendMessage(message) {
+  console.log("Sending "+message)
   socket.send(message);
 }
 
@@ -25,25 +26,33 @@ socket.onmessage = function (event) {
 
 $(document).ready(function(){
   $("button").click(function(){
-      var id=$(this).attr("id");
-      sendMessage("button"+id);
+    var id=$(this).attr("id");
+    sendMessage("button"+id);
   });
 
   $("select").change(function(){
-      var id=$(this).attr("id");
-      var val=$(this).val();
-      sendMessage("menu"+id+"="+val);
-  });
-
-  $("select").each(function(){
-      var id=$(this).attr("id");
-      var val=$(this).val();
-      sendMessage("menu"+id+"="+val);
+    var id=$(this).attr("id");
+    var val=$(this).val();
+    sendMessage("menu"+id+"="+val);
   });
 
   $("input").change(function(){
+    var id=$(this).attr("id");
+    var val=$(this).val();
+    var type=$(this).attr("type");
+    console.log(type);
+    if (typeof type=="undefined") {
+      sendMessage("textfield"+id+"="+val);
+    }
+    if (type=="radio") {
+      sendMessage("radiobutton"+id+"="+val)
+    }
+  });
+  socket.onopen = function (event) {
+    $("select").each(function(){
       var id=$(this).attr("id");
       var val=$(this).val();
-      sendMessage("textfield"+id+"="+val);
-  });
+      sendMessage("menu"+id+"="+val);
+    });
+  }
 });
