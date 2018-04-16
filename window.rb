@@ -10,6 +10,7 @@ class Window
   def add_element(element)
     raise ArgumentError, "The element must be of type Element." unless element.is_a? Element
     @elements.push element
+    return element
   end
 
   def render()
