@@ -10,7 +10,6 @@ class Object
 end
 
 class Text < Element
-  attr_reader :text
   @@ttoid={}
   @@idtot={}
   @@nextid=1
@@ -31,7 +30,6 @@ class Text < Element
 end
 
 class Link < Element
-  attr_reader :page, :text
   def initialize(page,text=nil)
     @page=page
     if text
