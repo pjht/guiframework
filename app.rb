@@ -44,8 +44,8 @@ class App
     servthread=Thread.new do
       server(self)
     end
+    startwsserv()
     if File.exists? "/Applications/Google\ Chrome.app" and !$forcenochrome
-      startwsserv()
       `"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome" --app="http://localhost:2000"`
     else
       puts "Chrome is not on your system."
