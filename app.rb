@@ -94,6 +94,9 @@ class App
     when "radiobutton"
       rb=RadioButton.idtorb[id]
       rb.block.call(val)
+    when "checkbox"
+      cb=CheckBox.idtocb[id]
+      cb.block.call(val.split("&"))
     end
   end
 

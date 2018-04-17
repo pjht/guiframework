@@ -172,3 +172,30 @@ class RadioButton < Element
     return @@idtorb
   end
 end
+
+
+class CheckBox < Element
+  @@idtocb={}
+  @@cbtoid={}
+  @@nextid=0
+  attr_reader :block
+  def initialize(buttons,&block)
+    @@cbtoid[self]=@@nextid
+    @@idtocb[@@nextid]=self
+    @@nextid+=1
+    @block=block
+    @buttons=buttons
+  end
+
+  def render()
+    html=""
+    @buttons.each do |value,text|
+      html+="<input type=\"checkbox\" id=#{@@cbtoid[self]} name=\"#{@@cbtoid[self]}\" value=\"#{value.to_s}\">#{text}<br>"
+    end
+    return html
+  end
+
+  def self.idtocb()
+    return @@idtocb
+  end
+end

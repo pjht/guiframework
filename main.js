@@ -4,7 +4,6 @@ window.onbeforeunload = function(){
 }
 
 function sendMessage(message) {
-  console.log("Sending "+message)
   socket.send(message);
 }
 
@@ -40,12 +39,23 @@ $(document).ready(function(){
     var id=$(this).attr("id");
     var val=$(this).val();
     var type=$(this).attr("type");
-    console.log(type);
     if (typeof type=="undefined") {
       sendMessage("textfield"+id+"="+val);
     }
     if (type=="radio") {
       sendMessage("radiobutton"+id+"="+val)
+    }
+    if (type=="checkbox") {
+      val="";
+      $("input[id="+id+"][type=\"checkbox\"]").each(function () {
+        if (this.checked) {
+          val+=$(this).val();
+          val+="&";
+        }
+      });
+      val=val.slice(0,-1);
+      console.log(val);
+      sendMessage("checkbox"+id+"="+val)
     }
   });
   socket.onopen = function (event) {
