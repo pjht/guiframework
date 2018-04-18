@@ -1,7 +1,7 @@
 require 'socket' # Provides TCPServer and TCPSocket classes
 require 'digest/sha1'
 
-class WebSocketServer
+class WebGui::WebSocketServer
   def initialize(host="localhost",port=2345)
     @server=TCPServer.new(host,port)
   end

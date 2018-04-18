@@ -1,4 +1,4 @@
-class Element
+class WebGui::Element
   def render()
     return ""
   end

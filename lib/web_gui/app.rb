@@ -1,5 +1,5 @@
 $forcenochrome=false
-class App
+class WebGui::App
   attr_reader :windows
   def initialize(title,&block)
     $app=self
@@ -9,11 +9,12 @@ class App
       end
     end
     @windows={}
-    @windows[:main]=Window.new(:main,title)
+    @windows[:main]=WebGui::Window.new(:main,title)
     @windows[:main].instance_eval(&block)
   end
 
   def render_document(wname)
+
     window=windows[wname]
     html=window.render
     css=window.render_css
@@ -37,12 +38,12 @@ class App
   end
 
   def add_window(wname,title,&block)
-    @windows[wname]=Window.new(wname,title)
+    @windows[wname]=WebGui::Window.new(wname,title)
     @windows[wname].instance_eval(&block)
   end
   def run()
     servthread=Thread.new do
-      server(self)
+      WebGui::Server.server(self)
     end
     startwsserv()
     if File.exists? "/Applications/Google\ Chrome.app" and !$forcenochrome
@@ -60,7 +61,7 @@ class App
   end
 
   def startwsserv()
-    @serv=WebSocketServer.new
+    @serv=WebGui::WebSocketServer.new
     Thread.new(self,@serv) do |parent,server|
       server.accept
       while true
@@ -83,19 +84,19 @@ class App
     id=id[0].to_i
     case type
     when "button"
-      button=ActionButton.idtobutton[id]
+      button=WebGui::ActionButton.idtobutton[id]
       button.block.call
     when "menu"
-      menu=Menu.idtomenu[id]
+      menu=WebGui::Menu.idtomenu[id]
       menu.block.call(val.to_sym)
     when "textfield"
-      tf=TextField.idtotf[id]
+      tf=WebGui::TextField.idtotf[id]
       tf.block.call(val)
     when "radiobutton"
-      rb=RadioButton.idtorb[id]
+      rb=WebGui::RadioButton.idtorb[id]
       rb.block.call(val)
     when "checkbox"
-      cb=CheckBox.idtocb[id]
+      cb=WebGui::CheckBox.idtocb[id]
       cb.block.call(val.split("&"))
     end
   end

@@ -1,4 +1,4 @@
-class Window
+class WebGui::Window
   attr_reader :name,:title,:elements
   attr_writer :title
   def initialize(name,title="")
@@ -8,7 +8,7 @@ class Window
   end
 
   def add_element(element)
-    raise ArgumentError, "The element must be of type Element." unless element.is_a? Element
+    raise ArgumentError, "The element must be of type Element." unless element.is_a? WebGui::Element
     @elements.push element
     return element
   end
@@ -23,7 +23,7 @@ class Window
 
   def render_css()
     css=""
-    Element.descendants.each do |el|
+    WebGui::Element.descendants.each do |el|
       elcss=el.css
       if elcss!=nil
         css+=elcss
