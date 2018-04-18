@@ -1,4 +1,4 @@
-class WebGui; end
+module WebGui; end
 require_relative "web_gui/app"
 require_relative "web_gui/window"
 require_relative "web_gui/element"
@@ -9,7 +9,7 @@ class Object
     ObjectSpace.each_object(::Class).select {|klass| klass < self }
   end
 end
-class WebGui
+module WebGui
   class Text < Element
     @@ttoid={}
     @@idtot={}
