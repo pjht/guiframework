@@ -30,15 +30,9 @@ app.add_window(:wind,"A window") {
 app.add_window(:calc,"Calculator") {
   add_element(WebGui::Text.new("Calculator:"))
   opthash={:add=>"Add",:sub=>"Subtract",:mult=>"Multiply",:div=>"Divide"}
-  add_element(WebGui::TextField.new { |val|
-      $num1=val.to_f
-    })
-  add_element(WebGui::Menu.new(opthash) { |val|
-      $op=val
-  })
-  add_element(WebGui::TextField.new { |val|
-      $num2=val.to_f
-  })
+  add_element(WebGui::TextField.new {|val| $num1=val.to_f})
+  add_element(WebGui::Menu.new(opthash) {|val| $op=val})
+  add_element(WebGui::TextField.new {|val| $num2=val.to_f})
   res=nil
   add_element(WebGui::ActionButton.new("Calculate") {
     case $op
