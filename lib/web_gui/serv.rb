@@ -48,9 +48,9 @@ class WebGui::Server
     client.close
   end
 
-  def self.server(app)
+  def self.server(app,platypus)
     Thread::abort_on_exception=true
-    server = TCPServer.new 2000
+    server = TCPServer.new(2000)
     $debug = true
     igfiles=["favicon.ico"]
     loop do
