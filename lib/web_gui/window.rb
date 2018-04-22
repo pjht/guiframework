@@ -1,9 +1,8 @@
-class WebGui::Window
-  attr_reader :name,:title,:elements
-  attr_writer :title
-  def initialize(name,title="")
-    @name=name
-    @title=title
+class WebGui::Window < Dry::Struct
+  attribute :title, Types::Coercible::String.default("")
+  attribute :name, Types::Coercible::String
+  def initialize(opthash)
+    super(opthash)
     @elements=[]
   end
 

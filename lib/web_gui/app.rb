@@ -10,7 +10,7 @@ class WebGui::App
       end
     end
     @windows={}
-    @windows[:main]=WebGui::Window.new(:main,title)
+    @windows[:main]=WebGui::Window.new(name: :main,title: title)
     @windows[:main].instance_eval(&block)
   end
 
@@ -39,7 +39,7 @@ class WebGui::App
   end
 
   def add_window(wname,title,&block)
-    @windows[wname]=WebGui::Window.new(wname,title)
+    @windows[wname]=WebGui::Window.new(name: wname,title: title)
     @windows[wname].instance_eval(&block)
   end
   def run(platypus=false)
@@ -87,22 +87,18 @@ class WebGui::App
     type=type[0]
     id=part1.match /\d+/
     id=id[0].to_i
+    el=$idtoel[id]
     case type
     when "button"
-      button=WebGui::ActionButton.idtobutton[id]
-      button.block.call
+      el.block.call
     when "menu"
-      menu=WebGui::Menu.idtomenu[id]
-      menu.block.call(val.to_sym)
+      el.block.call(val.to_sym)
     when "textfield"
-      tf=WebGui::TextField.idtotf[id]
-      tf.block.call(val)
+      el.block.call(val)
     when "radiobutton"
-      rb=WebGui::RadioButton.idtorb[id]
-      rb.block.call(val)
+      el.block.call(val)
     when "checkbox"
-      cb=WebGui::CheckBox.idtocb[id]
-      cb.block.call(val.split("&"))
+      el.block.call(val.split("&"))
     end
   end
 
