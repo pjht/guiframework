@@ -13,11 +13,15 @@ app=WebGui::App.new("My application") {
   valradio=nil
   valcheck=nil
   add_element(WebGui::RadioButton.new(buttons: {:hi=>"Hi",:hello=>"Hello"}){|sel|
-    valradio.settext("Value for radio buttons:#{sel}")
+    valradio.settext("Value for radio buttons:#{sel.to_s}")
   })
-  add_element(WebGui::CheckBox.new(boxes: {:hi=>"Hi",:hello=>"Hello"}){|sel|
-    sel=sel.join(",")
-    valcheck.settext("Value for checkboxes:#{sel}")
+  add_element(WebGui::CheckBox.new(boxes: {:hi=>"Hi",:hello=>"Hello"}){|sels|
+    temp=[]
+    sels.each do |sel|
+      temp.push sel
+    end
+    sels=temp.join(",")
+    valcheck.settext("Value for checkboxes:#{sels}")
   })
   valradio=add_element(WebGui::Text.new(text: "Value for radio buttons:"))
   valcheck=add_element(WebGui::Text.new(text: "Value for checkboxes:"))

@@ -1,10 +1,10 @@
 module WebGui; end
-require 'dry-struct'
-
+require "dry-struct"
 module Types
   include Dry::Types.module
-  Block=self.Instance(Proc)
 end
+require "dry-events"
+require_relative "web_gui/event_manager"
 require_relative "web_gui/app"
 require_relative "web_gui/window"
 require_relative "web_gui/element"
@@ -77,6 +77,10 @@ module WebGui
     def render()
       return "<button id=#{id}>#{text}</button>"
     end
+
+    def on_button_pushed(event)
+      @block.call if event[:id]==id
+    end
   end
 
 
@@ -95,6 +99,10 @@ module WebGui
       html+="</select>"
       return html
     end
+
+    def on_menu_updated(event)
+      @block.call(event[:val]) if event[:id]==id
+    end
   end
 
 
@@ -106,6 +114,10 @@ module WebGui
 
     def render()
       html="<input id=#{id}>"
+    end
+
+    def on_textfield_updated(event)
+      @block.call(event[:val]) if event[:id]==id
     end
   end
 
@@ -123,6 +135,10 @@ module WebGui
       end
       return html
     end
+
+    def on_radiobutton_updated(event)
+      @block.call(event[:val]) if event[:id]==id
+    end
   end
 
 
@@ -139,6 +155,10 @@ module WebGui
         html+="<input type=\"checkbox\" id=#{id} name=\"#{id}\" value=\"#{value.to_s}\">#{text}<br>"
       end
       return html
+    end
+
+    def on_checkbox_updated(event)
+      @block.call(event[:val]) if event[:id]==id
     end
   end
 end

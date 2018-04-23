@@ -8,7 +8,6 @@ end
 class WebGui::Element < Dry::Struct
   constructor_type :strict_with_defaults
   attribute :id, Types::Coercible::Int.default { get_id() }
-  attr_reader :block
   def initialize(opthash=nil)
     if opthash
       super(opthash)

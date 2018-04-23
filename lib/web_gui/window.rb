@@ -9,6 +9,7 @@ class WebGui::Window < Dry::Struct
   def add_element(element)
     raise ArgumentError, "The element must be of type Element." unless element.is_a? WebGui::Element
     @elements.push element
+    $eventmanager.subscribe(element)
     return element
   end
 

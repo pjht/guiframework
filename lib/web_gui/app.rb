@@ -1,5 +1,6 @@
 $forcenochrome=false
 $stdout.sync = true
+$eventmanager=EventManager.new
 class WebGui::App
   attr_reader :windows
   def initialize(title,&block)
@@ -87,18 +88,23 @@ class WebGui::App
     type=type[0]
     id=part1.match /\d+/
     id=id[0].to_i
-    el=$idtoel[id]
-    case type
-    when "button"
-      el.block.call
-    when "menu"
-      el.block.call(val.to_sym)
-    when "textfield"
-      el.block.call(val)
-    when "radiobutton"
-      el.block.call(val)
-    when "checkbox"
-      el.block.call(val.split("&"))
+    if val
+      case type
+      when "menu"
+        val=val.to_sym
+      when "radiobutton"
+        val=val.to_sym
+      when "checkbox"
+        vals=val.split("&")
+        temp=[]
+        vals.each do |val|
+          temp.push(val.to_sym)
+        end
+        val=temp
+      end
+      $eventmanager.publish("#{type}.updated",val: val,id: id)
+    else
+      $eventmanager.publish("#{type}.pushed",id: id)
     end
   end
 
