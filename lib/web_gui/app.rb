@@ -43,26 +43,21 @@ class WebGui::App
     @windows[wname]=WebGui::Window.new(name: wname,title: title)
     @windows[wname].instance_eval(&block)
   end
-  def run(platypus=false)
+  def run()
     servthread=Thread.new do
       WebGui::Server.server(self,platypus)
     end
     startwsserv()
-    if platypus
-      puts "Location:http://localhost:2000"
-      servthread.join
+    if File.exists? "/Applications/Google\ Chrome.app" and !$forcenochrome
+      `"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome" --app="http://localhost:2000"`
     else
-      if File.exists? "/Applications/Google\ Chrome.app" and !$forcenochrome
-        `"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome" --app="http://localhost:2000"`
-      else
-        puts "Chrome is not on your system."
-        puts "Please install Chrome to use this framework properly."
-        puts "If Chrome is installed, please make sure it is called Google Chrome.app and is in the root Applications folder."
-        puts "The app will open in your default browser as a regular webpage instead."
-        sleep(5)
-        `open http://localhost:2000`
-        servthread.join
-      end
+      puts "Chrome is not on your system."
+      puts "Please install Chrome to use this framework properly."
+      puts "If Chrome is installed, please make sure it is called Google Chrome.app and is in the root Applications folder."
+      puts "The app will open in your default browser as a regular webpage instead."
+      sleep(5)
+      `open http://localhost:2000`
+      servthread.join
     end
   end
 
