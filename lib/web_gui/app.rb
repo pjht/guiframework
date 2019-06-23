@@ -1,5 +1,5 @@
 $forcenochrome=false
-$stdout.sync = true
+$stdout.sync=true
 $eventmanager=EventManager.new
 class WebGui::App
   attr_reader :windows
@@ -45,7 +45,7 @@ class WebGui::App
   end
   def run()
     servthread=Thread.new do
-      WebGui::Server.server(self,platypus)
+      WebGui::Server.server(self)
     end
     startwsserv()
     if File.exists? "/Applications/Google\ Chrome.app" and !$forcenochrome

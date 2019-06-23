@@ -48,7 +48,7 @@ class WebGui::Server
     client.close
   end
 
-  def self.server(app,platypus)
+  def self.server(app)
     Thread::abort_on_exception=true
     server = TCPServer.new(2000)
     $debug = true

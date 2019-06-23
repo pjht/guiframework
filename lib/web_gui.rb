@@ -1,20 +1,20 @@
+class Object
+  def descendants
+    ObjectSpace.each_object(::Class).select {|klass| klass < self }
+  end
+end
 module WebGui; end
 require "dry-struct"
 module Types
   include Dry::Types.module
 end
 require "dry-events"
+require_relative "web_gui/element"
 require_relative "web_gui/event_manager"
 require_relative "web_gui/app"
 require_relative "web_gui/window"
-require_relative "web_gui/element"
 require_relative "web_gui/serv"
 require_relative "web_gui/wsserv"
-class Object
-  def descendants
-    ObjectSpace.each_object(::Class).select {|klass| klass < self }
-  end
-end
 module WebGui
   class Text < Element
     attribute :text, Types::Coercible::String
